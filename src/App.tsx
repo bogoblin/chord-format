@@ -19,12 +19,15 @@ function Chords({input}: { input: string }) {
                 if (nextLine?.type === "lyrics") {
                     const lyricLineElements = [];
                     lineIndex += 1;
-                    const lyricParts = splitWordsFromPairedChords(pairChordsWithLine(line.chords, nextLine.text));
+                    const lyricParts = splitWordsFromPairedChords(pairChordsWithLine(line.chords, nextLine.text))
+                        .filter(word => {
+                            return word[0]?.lyric !== " ";
+                        })
                     for (const word of lyricParts) {
                         const wordElements = [];
                         for (const {lyric, chord} of word) {
                             wordElements.push(<span className={"lyric-part"}>
-                            <span className={"chord"}>{chord || " "}</span>
+                            <span className={"chord"}>{chord || "​"}</span>
                             <span className={`lyric`}>{lyric}</span>
                         </span>)
                         }

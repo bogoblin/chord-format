@@ -18,11 +18,13 @@ h2 {
     display: flex;
     flex-wrap: wrap;
     break-inside: avoid;
+    gap: 0.5ch;
 
     .chord {
         grid-row: 1;
         position: relative;
         left: 0;
+        width: 0;
     }
 }
 .lyric-word {
@@ -39,11 +41,11 @@ h2 {
 .instrumental {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.3em;
 }
 .chord {
     font-family: "Noto Sans", sans-serif;
     font-weight: bold;
+    padding-right: 0.3em;
 }
 .lyric {
     grid-row: 2;
