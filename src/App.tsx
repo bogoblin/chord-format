@@ -34,13 +34,16 @@ function Chords({input}: { input: string }) {
                 } else {
                     const lyricLineElements = [];
                     for (const chord of line.chords) {
-                        lyricLineElements.push(<span className={"instrumental-chord chord"}>{chord[0]}</span>);
+                        lyricLineElements.push(<span className={"chord"}>{chord[0]}</span>);
                     }
-                    elements.push(<div>{lyricLineElements}</div>)
+                    elements.push(<div className={"instrumental"}>{lyricLineElements}</div>)
                 }
             } break;
             case "lyrics":
                 elements.push(<span className={"lyric"}>{line.text}</span>)
+                break;
+            case "rule":
+                elements.push(<hr/>);
                 break;
         }
     }

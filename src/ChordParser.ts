@@ -14,6 +14,9 @@ export type Line = {
     text: string
 } | {
     type: "blank"
+} | {
+    type: "rule",
+    text: string,
 }
 
 export function splitWordsFromPairedChords(pairs: {lyric: string, chord?: string | undefined}[]) {
@@ -83,7 +86,8 @@ export function pairChordsWithLine(chords: [string, number][], line: string) {
 export function identifyLines(chords: string) {
     const lines = chords.split("\n");
     const result : Line[] = [];
-    for (const line of lines) {
+    for (let line of lines) {
+        line = line.trimEnd();
         const prevLine = result[result.length - 1];
         if (/^\s*$/.test(line)) {
             if (prevLine && prevLine.type === "chords") {
@@ -92,18 +96,23 @@ export function identifyLines(chords: string) {
             result.push({type: "blank"});
             continue;
         }
+        if (!/[^-]/.test(line) || !/[^=]/.test(line)) {
+            result.push({type: "rule", text: line});
+            continue;
+        }
         const sectionMatch = /\[(.+)]/.exec(line);
         if (sectionMatch !== null) {
             result.push({type: "section", title: sectionMatch[1] || "", text: line});
             continue;
         }
-        let whitespaceCount = 0;
-        // eslint-disable-next-line no-empty-pattern
-        for (const {} of line.matchAll(/\s/g)) {
-            whitespaceCount++;
+        const words = line.split(/\s+/g);
+        let totalWordsLength = 0;
+        for (const word of words) {
+            totalWordsLength += word.length;
         }
-        const avgWordLength = (line.length - whitespaceCount) / (whitespaceCount + 1);
-        if (avgWordLength < 2.2 || line.length <= 2) {
+        const avgWordLength = totalWordsLength / words.length;
+        const containsLasOrDas = line.match(/(la|da|de|do)/gi) !== null;
+        if ((avgWordLength < 2.2 && !containsLasOrDas) || line.length <= 2) {
             // assume this line is chords
             const chordsArray: [string, number][] = [];
             for (const chord of line.matchAll(/(\S+)/g)) {

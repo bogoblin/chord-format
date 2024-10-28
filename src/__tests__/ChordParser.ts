@@ -116,18 +116,18 @@ I'll be laughing with everyone I see
 Can't believe
     C                  D            G  Em  C  D  G
 how strange it is to be anything at all`);
-    expect(lines[12]).toStrictEqual({
+    expect(lines[10]).toStrictEqual({
         type: "chords",
         chords: [["G", 0], ["Em", 18]],
         text: "G                 Em"
     })
-    expect(lines[13]).toStrictEqual({
+    expect(lines[11]).toStrictEqual({
         type: "lyrics",
         text: "What a beautiful face"
     })
 
-    if (lines[12].type === "chords" && lines[13].type === "lyrics") {
-        const pairs = pairChordsWithLine(lines[12].chords, lines[13].text);
+    if (lines[10].type === "chords" && lines[11].type === "lyrics") {
+        const pairs = pairChordsWithLine(lines[10].chords, lines[11].text);
         expect(pairs).toStrictEqual([
             {
                 lyric: "What a beautiful f",
@@ -153,10 +153,10 @@ how strange it is to be anything at all`);
         ])
     }
 
-    if (lines[26].type === "chords" && lines[27].type === "lyrics") {
+    if (lines[24].type === "chords" && lines[25].type === "lyrics") {
         //          C                 D                G  Em  C  D
         // Let me hold it close and keep it here with me
-        expect(pairChordsWithLine(lines[26].chords, lines[27].text)).toStrictEqual([
+        expect(pairChordsWithLine(lines[24].chords, lines[25].text)).toStrictEqual([
             {
                 lyric: "Let me ho",
             },
@@ -185,6 +185,8 @@ how strange it is to be anything at all`);
                 chord: "D"
             },
         ])
+    } else {
+        fail("wrong line?")
     }
 
     expect(lines[5]).toStrictEqual({
@@ -192,4 +194,27 @@ how strange it is to be anything at all`);
         text: "[Intro]",
         title: "Intro"
     })
+})
+
+test('Holland 1945', () => {
+    const lines = identifyLines(`[Chorus]
+
+ 
+
+                C             G
+
+But now we must pick up every piece
+
+        C               G
+
+Of this life we used to love
+
+        C                 G
+
+Just to keep ourselves at least
+
+                D
+
+Enough to carry on!`);
+    console.log(lines)
 })
