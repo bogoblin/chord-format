@@ -1,0 +1,55 @@
+body {
+    font-family: "xkcd Script", sans-serif;
+    background-color: #202020;
+    color: #c9c9c9;
+}
+
+h2 {
+    break-after: avoid;
+}
+.lyric-line {
+    display: flex;
+    flex-wrap: wrap;
+}
+.lyric-word {
+    display: inline-flex;
+    flex-direction: row;
+    break-inside: avoid;
+    height: 100%;
+}
+.lyric-part {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    height: 100%;
+}
+
+.instrumental-chord {
+    font-weight: bold;
+    padding-right: 0.5em;
+}
+.chord {
+    font-weight: bold;
+    grid-row: 1;
+    width: 0;
+    position: relative;
+    left: 0;
+}
+.lyric {
+    grid-row: 2;
+    white-space: pre;
+}
+
+@media print {
+    .no-print {
+        display: none;
+    }
+    color: black;
+}
+
+.chord-sheet {
+    columns: 2;
+}
+
+.no-break {
+    break-after: avoid;
+}
