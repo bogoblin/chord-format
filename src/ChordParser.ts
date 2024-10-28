@@ -105,14 +105,7 @@ export function identifyLines(chords: string) {
             result.push({type: "section", title: sectionMatch[1] || "", text: line});
             continue;
         }
-        const words = line.split(/\s+/g);
-        let totalWordsLength = 0;
-        for (const word of words) {
-            totalWordsLength += word.length;
-        }
-        const avgWordLength = totalWordsLength / words.length;
-        const containsLasOrDas = line.match(/(la|da|de|do)/gi) !== null;
-        if ((avgWordLength < 2.2 && !containsLasOrDas) || line.length <= 2) {
+        if (isChordLine(line)) {
             // assume this line is chords
             const chordsArray: [string, number][] = [];
             for (const chord of line.matchAll(/(\S+)/g)) {
@@ -135,4 +128,21 @@ export function identifyLines(chords: string) {
     }
 
     return result;
+}
+
+export function detectChords(line: string) {
+    const chords = [];
+    // regex courtesy of https://stackoverflow.com/a/62762818
+    for (const chord of line.matchAll(/[A-G]([b#]*)(maj|min|m|M|\+|-|dim|aug)?[0-9]*(sus)?[0-9]*(\/[A-G]([b#]*))?/g)) {
+        chords.push(chord[0]);
+    }
+    return chords;
+}
+
+export function isChordLine(line: string) {
+    const words = line.split(/\s+/);
+    if (words.length === 0) return false;
+
+    const chords = detectChords(line);
+    return (chords.length / words.length) >= 0.5;
 }

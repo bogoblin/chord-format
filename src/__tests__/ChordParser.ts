@@ -1,4 +1,4 @@
-import {identifyLines, pairChordsWithLine, splitWordsFromPairedChords} from "../ChordParser";
+import {detectChords, identifyLines, isChordLine, pairChordsWithLine, splitWordsFromPairedChords} from "../ChordParser";
 
 test("in the aeroplane over the sea", () => {
     const lines = identifyLines(`In the Aeroplane Over the Sea         chords furnished by Ben Hargrave
@@ -217,4 +217,12 @@ Just to keep ourselves at least
 
 Enough to carry on!`);
     console.log(lines)
+})
+
+test('detect chords', () => {
+    expect(detectChords("G                      Gmaj7         C/G                 G")).toStrictEqual(["G", "Gmaj7", "C/G", "G"]);
+})
+
+test('is chord line', () => {
+    expect(isChordLine("G                      Gmaj7         C/G                 G")).toBe(true);
 })
