@@ -8,9 +8,6 @@ function Chords({input}: { input: string }) {
     for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
         const line = lines[lineIndex];
         switch (line.type) {
-            case "blank":
-                // elements.push(<br/>);
-                break;
             case "annotation":
                 elements.push(<p>{line.text}</p>);
                 break;

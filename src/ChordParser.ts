@@ -84,7 +84,11 @@ export function identifyLines(chords: string) {
     const lines = chords.split("\n");
     const result : Line[] = [];
     for (const line of lines) {
+        const prevLine = result[result.length - 1];
         if (/^\s*$/.test(line)) {
+            if (prevLine && prevLine.type === "chords") {
+                continue;
+            }
             result.push({type: "blank"});
             continue;
         }
@@ -98,8 +102,8 @@ export function identifyLines(chords: string) {
         for (const {} of line.matchAll(/\s/g)) {
             whitespaceCount++;
         }
-        const whitespaceRatio = whitespaceCount/line.length;
-        if (whitespaceRatio > 0.5) {
+        const avgWordLength = (line.length - whitespaceCount) / (whitespaceCount + 1);
+        if (avgWordLength < 2.2 || line.length <= 2) {
             // assume this line is chords
             const chordsArray: [string, number][] = [];
             for (const chord of line.matchAll(/(\S+)/g)) {
@@ -111,7 +115,6 @@ export function identifyLines(chords: string) {
             result.push({type: "chords", chords: chordsArray, text: line});
             continue;
         }
-        const prevLine = result[result.length - 1];
         if (prevLine && prevLine.type == "chords") {
             result.push({
                 type: "lyrics",
