@@ -46,6 +46,7 @@ h2 {
     font-family: "Noto Sans", sans-serif;
     font-weight: bold;
     padding-right: 0.3em;
+    text-wrap: nowrap;
 }
 .lyric {
     grid-row: 2;
