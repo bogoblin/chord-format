@@ -55,6 +55,9 @@ function App() {
     const [fontScale, setFontScale] = useState(100);
     const [columns, setColumns] = useState(2);
 
+    const [title, setTitle] = useState("");
+    const [artist, setArtist] = useState("");
+
     return (
         <>
             <form className={"no-print"}>
@@ -62,8 +65,13 @@ function App() {
                     Paste chords here:<br/>
                     <textarea onChange={(event) => setChordInput(event.target.value)}/>
                 </label>
-                <br/>
-                <div style={{display: "flex", gap: "2em"}}>
+                <label>
+                    Title: <input type={"text"} value={title} onChange={event => setTitle(event.target.value)}/>
+                </label>
+                <label>
+                    Artist: <input type={"text"} value={artist} onChange={event => setArtist(event.target.value)}/>
+                </label>
+                <div>
                     <label>
                         Font size:
                         <input type={"range"} value={fontScale} min={30} max={300}
@@ -76,8 +84,11 @@ function App() {
                                onChange={event => setColumns(parseFloat(event.target.value))}/>
                     </label>
                 </div>
+                <hr></hr>
             </form>
             <div className={"chord-sheet"} style={{fontSize: `${fontScale}%`, columnCount: columns}}>
+                <h1>{title}</h1>
+                {artist.length > 0 ? <h2 className={"byline"}>by {artist}</h2> : '' }
                 <Chords input={chordInput}/>
             </div>
         </>
