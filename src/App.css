@@ -76,3 +76,7 @@ label {
 hr {
     break-after: page;
 }
+
+.tab {
+    margin: 0;
+}

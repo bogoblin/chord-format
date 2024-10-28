@@ -17,6 +17,9 @@ export type Line = {
 } | {
     type: "rule",
     text: string,
+} | {
+    type: "tab",
+    text: string,
 }
 
 export function splitWordsFromPairedChords(pairs: {lyric: string, chord?: string | undefined}[]) {
@@ -100,6 +103,10 @@ export function identifyLines(chords: string) {
             result.push({type: "rule", text: line});
             continue;
         }
+        if (line.match(/\|[-\d]*\|/)) {
+            result.push({type: "tab", text: line});
+            continue;
+        }
         const sectionMatch = /\[(.+)]/.exec(line);
         if (sectionMatch !== null) {
             result.push({type: "section", title: sectionMatch[1] || "", text: line});
@@ -117,7 +124,7 @@ export function identifyLines(chords: string) {
             result.push({type: "chords", chords: chordsArray, text: line});
             continue;
         }
-        if (prevLine && prevLine.type == "chords") {
+        if (prevLine?.type === "chords" || prevLine?.type === "lyrics") {
             result.push({
                 type: "lyrics",
                 text: line
@@ -133,7 +140,7 @@ export function identifyLines(chords: string) {
 export function detectChords(line: string) {
     const chords = [];
     // regex courtesy of https://stackoverflow.com/a/62762818
-    for (const chord of line.matchAll(/[A-G]([b#]*)(maj|min|m|M|\+|-|dim|aug)?[0-9]*(sus)?[0-9]*(\/[A-G]([b#]*))?/g)) {
+    for (const chord of line.matchAll(/\b[A-G]([b#]*)(maj|min|m|M|\+|-|dim|aug)?[0-9]*(sus)?[0-9]*(\/[A-G]([b#]*))?\b/g)) {
         chords.push(chord[0]);
     }
     return chords;

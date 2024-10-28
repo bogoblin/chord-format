@@ -40,10 +40,13 @@ function Chords({input}: { input: string }) {
                 }
             } break;
             case "lyrics":
-                elements.push(<span className={"lyric"}>{line.text}</span>)
+                elements.push(<div className={"lyric"}>{line.text}</div>)
                 break;
             case "rule":
                 elements.push(<hr/>);
+                break;
+            case "tab":
+                elements.push(<pre className={"tab"}>{line.text}</pre>);
                 break;
         }
     }
