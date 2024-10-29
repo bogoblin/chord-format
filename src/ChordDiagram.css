@@ -1,0 +1,16 @@
+.chord-diagram {
+    display: grid;
+    grid-template-columns: repeat(6, min-content min-content);
+    font-size: 70%;
+}
+
+.fret-marker:before {
+    content: '●';
+}
+.fret-marker-open:before {
+    content: '○';
+}
+.fret-marker-muted:before {
+    content: '×';
+}
+

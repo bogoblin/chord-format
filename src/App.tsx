@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import {applySensibleMerges, identifyLines, pairChordsWithLine, splitWordsFromPairedChords} from "./ChordParser.ts";
 import './App.css';
+import {ChordDiagram} from "./ChordDiagram.tsx";
 
 function Chords({input}: { input: string }) {
     const lines = identifyLines(input);
@@ -93,6 +94,7 @@ function App() {
                 </div>
                 <hr></hr>
             </form>
+            <ChordDiagram chordName={"Am"} frets={[-1, 0, 2, 2, 1, 0]}/>
             <div className={"chord-sheet"} style={{fontSize: `${fontScale}%`, columnCount: columns}}>
                 <h1>{title}</h1>
                 {artist.length > 0 ? <h2 className={"byline"}>by {artist}</h2> : '' }
