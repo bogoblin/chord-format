@@ -122,6 +122,8 @@ export function splitWordsFromPairedChords(pairs: {lyric: string, chord?: string
         }
         if (wordsInPair.length > 0) {
             wordsInPair[0].chord = chord;
+        } else {
+            wordsInPair.push(pairs[index]);
         }
 
         for (const word of wordsInPair) {

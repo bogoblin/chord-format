@@ -226,6 +226,19 @@ Enough to carry on!`);
     console.log(lines)
 })
 
+test('Drown With Me', () => {
+    const lines = identifyLines(
+        `                    G6             Cmaj7  F#7add11
+  Your lipstick has gone astray`);
+    console.log(lines)
+    if (lines[0].type === "chords" && lines[1].type === "lyrics") {
+        const pairs = pairChordsWithLine(lines[0].chords, lines[1].text)
+        console.log(pairs)
+        const words = splitWordsFromPairedChords(pairs);
+        console.log(words);
+    }
+})
+
 test('detect chords', () => {
     expect(detectChords("G                      Gmaj7         C/G                 G")).toStrictEqual(["G", "Gmaj7", "C/G", "G"]);
 })
