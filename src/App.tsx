@@ -33,9 +33,13 @@ function Chords({input}: { input: string }) {
                     elements.push(<div className={"lyric-line"}>{lyricLineElements}</div>)
                 } else {
                     const lyricLineElements = [];
-                    for (const chord of line.chords) {
-                        lyricLineElements.push(<span className={"chord"}>{chord[0]}</span>);
+                    for (let i = 0; i < line.chords.length-1; i++) {
+                        const chord = line.chords[i];
+                        const nextChord = line.chords[i+1];
+                        lyricLineElements.push(<span className={"chord"} style={{flexGrow: nextChord[1]}}>{chord[0]}</span>);
                     }
+                    const chord = line.chords[line.chords.length-1];
+                    lyricLineElements.push(<span className={"chord"} style={{flexGrow: chord[1]}}>{chord[0]}</span>);
                     elements.push(<div className={"instrumental"}>{lyricLineElements}</div>)
                 }
             } break;
