@@ -53,7 +53,7 @@ export function chordOverhang(word: PairedWord) {
         }
     }
     // Chords usually use wider letters, so I am putting a multiplier here:
-    return Math.max(0, chordLength * 1.2 - charactersFromEnd);
+    return Math.max(0, chordLength * 2 - charactersFromEnd);
 }
 export function chordUnderhang(word: PairedWord) {
     let charactersFromStart = 0;

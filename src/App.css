@@ -47,6 +47,7 @@ h2 {
 .lyric {
     grid-row: 2;
     white-space: pre;
+    text-wrap: nowrap;
 }
 
 @media print {
