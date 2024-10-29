@@ -18,13 +18,9 @@ h2 {
     display: flex;
     flex-wrap: wrap;
     break-inside: avoid;
-    gap: 0.5ch;
 
     .chord {
         grid-row: 1;
-        position: relative;
-        left: 0;
-        width: 0;
     }
 }
 .lyric-word {

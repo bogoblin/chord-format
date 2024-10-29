@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import {identifyLines, pairChordsWithLine, splitWordsFromPairedChords} from "./ChordParser.ts";
+import {applySensibleMerges, identifyLines, pairChordsWithLine, splitWordsFromPairedChords} from "./ChordParser.ts";
 import './App.css';
 
 function Chords({input}: { input: string }) {
@@ -19,10 +19,7 @@ function Chords({input}: { input: string }) {
                 if (nextLine?.type === "lyrics") {
                     const lyricLineElements = [];
                     lineIndex += 1;
-                    const lyricParts = splitWordsFromPairedChords(pairChordsWithLine(line.chords, nextLine.text))
-                        .filter(word => {
-                            return word[0]?.lyric !== " ";
-                        })
+                    const lyricParts = applySensibleMerges(splitWordsFromPairedChords(pairChordsWithLine(line.chords, nextLine.text)));
                     for (const word of lyricParts) {
                         const wordElements = [];
                         for (const {lyric, chord} of word) {

@@ -1,4 +1,11 @@
-import {detectChords, identifyLines, isChordLine, pairChordsWithLine, splitWordsFromPairedChords} from "../ChordParser";
+import {
+    applySensibleMerges, chordUnderhang,
+    detectChords,
+    identifyLines,
+    isChordLine,
+    pairChordsWithLine,
+    splitWordsFromPairedChords
+} from "../ChordParser";
 
 test("in the aeroplane over the sea", () => {
     const lines = identifyLines(`In the Aeroplane Over the Sea         chords furnished by Ben Hargrave
@@ -225,4 +232,18 @@ test('detect chords', () => {
 
 test('is chord line', () => {
     expect(isChordLine("G                      Gmaj7         C/G                 G")).toBe(true);
+})
+
+test('apply sensible merges', () => {
+    expect(applySensibleMerges([
+        [{lyric: "I", chord: "C/G"}],
+        [{lyric: " ", }],
+        [{lyric: "will", }],
+    ])).toStrictEqual([
+        [{lyric: "I will", chord: "C/G"}]
+    ])
+})
+
+test('underhang', () => {
+    expect(chordUnderhang([{lyric: "will"}])).toBe(4);
 })

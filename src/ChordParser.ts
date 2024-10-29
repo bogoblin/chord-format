@@ -22,8 +22,84 @@ export type Line = {
     text: string,
 }
 
+type PairedWord = {lyric: string, chord?: string | undefined}[];
+
+export function applySensibleMerges(words: PairedWord[]) {
+    const result : PairedWord[] = [];
+    for (const word of words) {
+        result.push(word);
+        if (result.length >= 2) {
+            const word2 = result.pop() as PairedWord;
+            const word1 = result.pop() as PairedWord;
+            if (shouldMergeWords(word1, word2)) {
+                result.push(mergeWords(word1, word2));
+            } else {
+                result.push(word1, word2);
+            }
+        }
+    }
+    return result;
+}
+
+export function chordOverhang(word: PairedWord) {
+    let charactersFromEnd = 0;
+    let chordLength = 0;
+    for (let i = word.length-1; i>=0; i--) {
+        const {lyric, chord} = word[i];
+        charactersFromEnd += lyric.length;
+        if (chord) {
+            chordLength = chord.length;
+            break;
+        }
+    }
+    // Chords usually use wider letters, so I am putting a multiplier here:
+    return Math.max(0, chordLength * 1.2 - charactersFromEnd);
+}
+export function chordUnderhang(word: PairedWord) {
+    let charactersFromStart = 0;
+    for (const part of word) {
+        if (part.chord) {
+            return charactersFromStart;
+        }
+        charactersFromStart += part.lyric.length;
+    }
+    return 1000000;
+}
+
+export function shouldMergeWords(word1: PairedWord, word2: PairedWord) : boolean {
+    const overhang1 = chordOverhang(word1);
+    if (overhang1 > 0) {
+        return overhang1 < chordUnderhang(word2);
+    }
+    return false;
+}
+
+export function mergeWords(word1: PairedWord, word2: PairedWord) : PairedWord {
+    const merged = [...word1, ...word2];
+    const result : PairedWord = [];
+    for (const part of merged) {
+        result.push(part);
+        if (result.length >= 2) {
+            const part2 = result.pop();
+            const part1 = result.pop();
+            // This will always be false but I need to make typescript happy:
+            if (!part1 || !part2) continue;
+
+            if (!part2.chord) {
+                result.push({
+                    chord: part1.chord,
+                    lyric: part1.lyric + part2.lyric
+                });
+            } else {
+                result.push(part1, part2);
+            }
+        }
+    }
+    return result;
+}
+
 export function splitWordsFromPairedChords(pairs: {lyric: string, chord?: string | undefined}[]) {
-    const words: {lyric: string, chord?: string | undefined}[][] = [];
+    const words: PairedWord[] = [];
     let currentWord: {lyric: string, chord?: string | undefined}[] = [];
     for (let index = 0; index < pairs.length; index++) {
         const {lyric, chord} = pairs[index];
