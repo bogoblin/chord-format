@@ -71,19 +71,27 @@ function App() {
     const [title, setTitle] = useState(urlParams.get('title') || '');
     const [artist, setArtist] = useState(urlParams.get('artist') || '');
 
+    const params = new URLSearchParams({text: chordInput});
+    if (title.length > 0) params.set('title', title);
+    if (artist.length > 0) params.set('artist', artist);
+    const url = location.host + '/?' + params.toString();
+
     return (
         <>
             <form className={"no-print"}>
-                <label>
+                <label style={{padding: "0"}}>
                     Paste chords here:<br/>
-                    <textarea value={chordInput} onChange={(event) => setChordInput(event.target.value)}/>
+                    <textarea style={{minWidth: "100%", maxWidth: "100%"}} value={chordInput}
+                              onChange={(event) => setChordInput(event.target.value)}/>
                 </label>
-                <label>
-                    Title: <input type={"text"} value={title} onChange={event => setTitle(event.target.value)}/>
-                </label>
-                <label>
-                    Artist: <input type={"text"} value={artist} onChange={event => setArtist(event.target.value)}/>
-                </label>
+                <div>
+                    <label>
+                        Title: <input type={"text"} value={title} onChange={event => setTitle(event.target.value)}/>
+                    </label>
+                    <label>
+                        Artist: <input type={"text"} value={artist} onChange={event => setArtist(event.target.value)}/>
+                    </label>
+                </div>
                 <div>
                     <label>
                         Font size:
@@ -97,15 +105,13 @@ function App() {
                                onChange={event => setColumns(parseFloat(event.target.value))}/>
                     </label>
                 </div>
+                <Share url={url}/>
                 <button onClick={e => {
-                    const params = new URLSearchParams({text: chordInput});
-                    if (title.length > 0) params.set('title', title);
-                    if (artist.length > 0) params.set('artist', artist);
-                    const url = location.host + '/?' + params.toString();
-                    navigator.clipboard.writeText(url).then(() => console.log("copied to clipboard"));
                     e.stopPropagation();
                     e.preventDefault();
-                }}>Copy link to Clipboard</button>
+                    print();
+                }}>Print
+                </button>
                 <hr/>
             </form>
             <div className={"chord-sheet"} style={{fontSize: `${fontScale}%`, columnCount: columns}}>
@@ -115,6 +121,24 @@ function App() {
             </div>
         </>
     )
+}
+
+function Share(data: {url: string}) {
+    if (navigator.canShare(data)) {
+        return <button onClick={e => {
+            navigator.share(data).then(() => console.log("shared"));
+            e.stopPropagation();
+            e.preventDefault();
+        }}>Share
+        </button>;
+    } else {
+        return <button onClick={e => {
+            navigator.clipboard.writeText(data.url).then(() => console.log("copied to clipboard"));
+            e.stopPropagation();
+            e.preventDefault();
+        }}>Copy link to Clipboard
+        </button>;
+    }
 }
 
 export default App
