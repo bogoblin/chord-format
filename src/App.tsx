@@ -103,7 +103,7 @@ function App() {
     const params = new URLSearchParams({text: chordInput});
     if (title.length > 0) params.set('title', title);
     if (artist.length > 0) params.set('artist', artist);
-    const url = location.host + '/?' + params.toString();
+    const url = location.origin + location.pathname + '/?' + params.toString();
 
     return (
         <>
