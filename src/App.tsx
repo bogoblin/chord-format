@@ -153,19 +153,19 @@ function App() {
 }
 
 function Share(data: {url: string}) {
-    if (navigator.canShare(data)) {
-        return <button onClick={e => {
-            navigator.share(data).then(() => console.log("shared"));
-            e.stopPropagation();
-            e.preventDefault();
-        }}>Share
-        </button>;
-    } else {
+    if (!navigator.canShare || !navigator.canShare(data)) {
         return <button onClick={e => {
             navigator.clipboard.writeText(data.url).then(() => console.log("copied to clipboard"));
             e.stopPropagation();
             e.preventDefault();
         }}>Copy link to Clipboard
+        </button>;
+    } else {
+        return <button onClick={e => {
+            navigator.share(data).then(() => console.log("shared"));
+            e.stopPropagation();
+            e.preventDefault();
+        }}>Share
         </button>;
     }
 }
