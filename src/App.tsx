@@ -62,19 +62,21 @@ function Chords({input}: { input: string }) {
 }
 
 function App() {
-    const [chordInput, setChordInput] = useState("");
+    const urlParams = new URLSearchParams(location.search);
+
+    const [chordInput, setChordInput] = useState(urlParams.get('text') || '');
     const [fontScale, setFontScale] = useState(100);
     const [columns, setColumns] = useState(2);
 
-    const [title, setTitle] = useState("");
-    const [artist, setArtist] = useState("");
+    const [title, setTitle] = useState(urlParams.get('title') || '');
+    const [artist, setArtist] = useState(urlParams.get('artist') || '');
 
     return (
         <>
             <form className={"no-print"}>
                 <label>
                     Paste chords here:<br/>
-                    <textarea onChange={(event) => setChordInput(event.target.value)}/>
+                    <textarea value={chordInput} onChange={(event) => setChordInput(event.target.value)}/>
                 </label>
                 <label>
                     Title: <input type={"text"} value={title} onChange={event => setTitle(event.target.value)}/>
@@ -95,7 +97,16 @@ function App() {
                                onChange={event => setColumns(parseFloat(event.target.value))}/>
                     </label>
                 </div>
-                <hr></hr>
+                <button onClick={e => {
+                    const params = new URLSearchParams({text: chordInput});
+                    if (title.length > 0) params.set('title', title);
+                    if (artist.length > 0) params.set('artist', artist);
+                    const url = location.host + '/?' + params.toString();
+                    navigator.clipboard.writeText(url).then(() => console.log("copied to clipboard"));
+                    e.stopPropagation();
+                    e.preventDefault();
+                }}>Copy link to Clipboard</button>
+                <hr/>
             </form>
             <div className={"chord-sheet"} style={{fontSize: `${fontScale}%`, columnCount: columns}}>
                 <h1>{title}</h1>
