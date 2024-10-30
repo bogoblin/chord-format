@@ -27,7 +27,8 @@ export function ChordDiagram(props: {frets: number[], title: string}) {
             position
         })
         .configure({
-            frets: numberOfFrets
+            frets: numberOfFrets,
+            color: "var(--text-color)"
         })
         .draw();
     return <div className={"chord-diagram"}>

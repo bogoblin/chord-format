@@ -20,9 +20,45 @@ export type Line = {
 } | {
     type: "tab",
     text: string,
+} | {
+    type: "chord-diagram",
+    frets: number[],
+    chord: string
 }
 
 type PairedWord = {lyric: string, chord?: string | undefined}[];
+
+const singleStringRegex = /((?:\d|[1-9]\d\b|x|X)\W*)/;
+let diagramSource = '';
+for (let i=0; i<6; i++) diagramSource+=singleStringRegex.source;
+const diagramRegex = new RegExp(diagramSource+"\\D*$");
+
+export function getChordDiagram(line: string) {
+    try {
+        const chord = line.match(chordRegex);
+        if (chord) {
+            line = line.replace(chord[0], '');
+            const frets = line.match(diagramRegex);
+            if (frets) {
+                const resultFrets = [];
+                for (let string = 1; string <= 6; string++) {
+                    if (frets[string].toLowerCase() === 'x') {
+                        resultFrets.push(-1);
+                    } else {
+                        resultFrets.push(parseInt(frets[string]));
+                    }
+                }
+
+                return {
+                    chord: chord[0],
+                    frets: resultFrets
+                }
+            }
+        }
+    }
+    catch { /* empty */ }
+    return undefined;
+}
 
 export function applySensibleMerges(words: PairedWord[]) {
     const result : PairedWord[] = [];
@@ -82,7 +118,7 @@ export function mergeWords(word1: PairedWord, word2: PairedWord) : PairedWord {
         if (result.length >= 2) {
             const part2 = result.pop();
             const part1 = result.pop();
-            // This will always be false but I need to make typescript happy:
+            // This will always be false, but I need to make typescript happy:
             if (!part1 || !part2) continue;
 
             if (!part2.chord) {
@@ -181,6 +217,11 @@ export function identifyLines(chords: string) {
             result.push({type: "rule", text: line});
             continue;
         }
+        const diagram = getChordDiagram(line);
+        if (diagram) {
+            result.push({type: "chord-diagram", frets: diagram.frets, chord: diagram.chord});
+            continue;
+        }
         if (line.match(/\|[-\d]*\|/)) {
             result.push({type: "tab", text: line});
             continue;
@@ -215,10 +256,11 @@ export function identifyLines(chords: string) {
     return result;
 }
 
+const chordRegex = /\b[A-G]([b#]*)(maj|min|m|M|\+|-|dim|aug)?[0-9]*(sus|add)?[0-9]*(\/[A-G]([b#]*))?\b/g;
 export function detectChords(line: string) {
     const chords = [];
     // regex courtesy of https://stackoverflow.com/a/62762818
-    for (const chord of line.matchAll(/\b[A-G]([b#]*)(maj|min|m|M|\+|-|dim|aug)?[0-9]*(sus)?[0-9]*(\/[A-G]([b#]*))?\b/g)) {
+    for (const chord of line.matchAll(chordRegex)) {
         chords.push(chord[0]);
     }
     return chords;

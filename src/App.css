@@ -1,7 +1,14 @@
 body {
+    --text-color: #c9c9c9;
+    --background-color: #202020;
     font-family: "Century", serif;
-    background-color: #202020;
-    color: #c9c9c9;
+    background-color: var(--background-color);
+    color: var(--text-color);
+
+    @media print {
+        --text-color: black;
+        --background-color: white;
+    }
 }
 
 p {

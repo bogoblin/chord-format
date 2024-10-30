@@ -53,6 +53,9 @@ function Chords({input}: { input: string }) {
             case "tab":
                 elements.push(<pre className={"tab"}>{line.text}</pre>);
                 break;
+            case "chord-diagram":
+                elements.push(<ChordDiagram frets={line.frets} title={line.chord}/>);
+                break;
         }
     }
     return <>{elements}</>
@@ -94,7 +97,6 @@ function App() {
                 </div>
                 <hr></hr>
             </form>
-            <ChordDiagram frets={[-1, 0, 2, 2, 2, 0]} title={"A"}/>
             <div className={"chord-sheet"} style={{fontSize: `${fontScale}%`, columnCount: columns}}>
                 <h1>{title}</h1>
                 {artist.length > 0 ? <h2 className={"byline"}>by {artist}</h2> : '' }

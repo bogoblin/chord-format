@@ -1,6 +1,6 @@
 import {
     applySensibleMerges, chordUnderhang,
-    detectChords,
+    detectChords, getChordDiagram,
     identifyLines,
     isChordLine,
     pairChordsWithLine,
@@ -259,4 +259,146 @@ test('apply sensible merges', () => {
 
 test('underhang', () => {
     expect(chordUnderhang([{lyric: "will"}])).toBe(4);
+})
+
+test('Get Chord Diagrams', () => {
+    expect(getChordDiagram('Badd4    = 799800')).toStrictEqual({
+        chord: "Badd4",
+        frets: [7, 9, 9, 8, 0, 0]
+    });
+    expect(getChordDiagram('Cmaj7    = 8-10-10-900')).toStrictEqual({
+        chord: "Cmaj7",
+        frets: [8, 10, 10, 9, 0, 0]
+    });
+    expect(getChordDiagram('Badd4    = 799800')).toMatchInlineSnapshot(`
+{
+  "chord": "Badd4",
+  "frets": [
+    7,
+    9,
+    9,
+    8,
+    0,
+    0,
+  ],
+}
+`);
+    expect(getChordDiagram('F#m      = 244222')).toMatchInlineSnapshot(`
+{
+  "chord": "F#m",
+  "frets": [
+    2,
+    4,
+    4,
+    2,
+    2,
+    2,
+  ],
+}
+`);
+    expect(getChordDiagram('G6       = 355400')).toMatchInlineSnapshot(`
+{
+  "chord": "G6",
+  "frets": [
+    3,
+    5,
+    5,
+    4,
+    0,
+    0,
+  ],
+}
+`);
+    expect(getChordDiagram('Cmaj7    = 8-10-10-900')).toMatchInlineSnapshot(`
+{
+  "chord": "Cmaj7",
+  "frets": [
+    8,
+    10,
+    10,
+    9,
+    0,
+    0,
+  ],
+}
+`);
+    expect(getChordDiagram('F#7add11 = 244300')).toMatchInlineSnapshot(`
+{
+  "chord": "F#7add11",
+  "frets": [
+    2,
+    4,
+    4,
+    3,
+    0,
+    0,
+  ],
+}
+`);
+    expect(getChordDiagram('E        = 022100')).toMatchInlineSnapshot(`
+{
+  "chord": "E",
+  "frets": [
+    0,
+    2,
+    2,
+    1,
+    0,
+    0,
+  ],
+}
+`);
+    expect(getChordDiagram('Cadd9    = x32030')).toMatchInlineSnapshot(`
+{
+  "chord": "Cadd9",
+  "frets": [
+    -1,
+    3,
+    2,
+    0,
+    3,
+    0,
+  ],
+}
+`);
+    expect(getChordDiagram('G        = 320033')).toMatchInlineSnapshot(`
+{
+  "chord": "G",
+  "frets": [
+    3,
+    2,
+    0,
+    0,
+    3,
+    3,
+  ],
+}
+`);
+    expect(getChordDiagram('D        = xx0232')).toMatchInlineSnapshot(`
+{
+  "chord": "D",
+  "frets": [
+    -1,
+    -1,
+    0,
+    2,
+    3,
+    2,
+  ],
+}
+`);
+    expect(getChordDiagram('A        = x02220')).toMatchInlineSnapshot(`
+{
+  "chord": "A",
+  "frets": [
+    -1,
+    0,
+    2,
+    2,
+    2,
+    0,
+  ],
+}
+`);
+    expect(getChordDiagram('Badd4   F#m   G6   Cmaj7 F#7add11 x3')).toBeUndefined();
 })
