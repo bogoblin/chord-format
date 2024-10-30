@@ -86,7 +86,6 @@ hr {
 }
 
 .tab {
-    font-family: "Noto Sans", sans-serif;
     margin: 0;
     text-align: center;
 }
@@ -98,4 +97,16 @@ hr {
     border-left: 1px solid;
     padding-left: 0.4em;
     font-family: "Century", serif;
+}
+.tab-note {
+    * {
+        background-color: var(--background-color);
+        padding: 0 0.1em;
+    }
+}
+.tab-line {
+    display: block;
+    height: 50%;
+    border-bottom: 1px solid;
+    width: 100%;
 }
