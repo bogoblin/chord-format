@@ -20,6 +20,12 @@ export type Line = {
 } | {
     type: "tab",
     text: string,
+    string?: string,
+    notes: {
+        note: string,
+        index: number
+    }[],
+    after: string
 } | {
     type: "chord-diagram",
     frets: number[],
@@ -222,8 +228,16 @@ export function identifyLines(chords: string) {
             result.push({type: "chord-diagram", frets: diagram.frets, chord: diagram.chord});
             continue;
         }
-        if (line.match(/\|[-\d]*\|/)) {
-            result.push({type: "tab", text: line});
+        const tabMatch = line.match(/^\s*([a-g][#b]?)?\|([-\d]*)\|(.*)$/i);
+        if (tabMatch) {
+            const notes = [];
+            for (const tabNote of tabMatch[2].matchAll(/[^-]+/g)) {
+                notes.push({
+                    index: tabNote.index,
+                    note: tabNote[0]
+                });
+            }
+            result.push({type: "tab", text: line, string: tabMatch[1], notes, after: tabMatch[3]});
             continue;
         }
         const sectionMatch = /\[(.+)]/.exec(line);

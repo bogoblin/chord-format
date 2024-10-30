@@ -402,3 +402,32 @@ test('Get Chord Diagrams', () => {
 `);
     expect(getChordDiagram('Badd4   F#m   G6   Cmaj7 F#7add11 x3')).toBeUndefined();
 })
+
+test('Identifying Tab', () => {
+    const lines = identifyLines(`   F
+e|-----1-----------------|
+B|-------1-----1---------|
+G|---2-------2-----------|  X10
+D|-3-------3-------------|
+A|-----------------------|
+E|-----------------------|
+`);
+    expect(lines[4]).toMatchInlineSnapshot(`
+{
+  "after": "",
+  "notes": [
+    {
+      "index": 1,
+      "note": "3",
+    },
+    {
+      "index": 9,
+      "note": "3",
+    },
+  ],
+  "string": "D",
+  "text": "D|-3-------3-------------|",
+  "type": "tab",
+}
+`);
+})
