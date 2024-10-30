@@ -6,8 +6,8 @@ import {ChordDiagram} from "./ChordDiagram.tsx";
 function Chords({input}: { input: string }) {
     const lines = identifyLines(input);
     const elements = [];
-    for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
-        const line = lines[lineIndex];
+    let line;
+    while ((line = lines.shift())) {
         switch (line.type) {
             case "annotation":
                 elements.push(<p>{line.text}</p>);
@@ -16,10 +16,9 @@ function Chords({input}: { input: string }) {
                 elements.push(<h2>{line.title}</h2>);
                 break;
             case "chords": {
-                const nextLine = lines[lineIndex+1];
+                const nextLine = lines.shift();
                 if (nextLine?.type === "lyrics") {
                     const lyricLineElements = [];
-                    lineIndex += 1;
                     const lyricParts = applySensibleMerges(splitWordsFromPairedChords(pairChordsWithLine(line.chords, nextLine.text)));
                     for (const word of lyricParts) {
                         const wordElements = [];
@@ -33,6 +32,8 @@ function Chords({input}: { input: string }) {
                     }
                     elements.push(<div className={"lyric-line"}>{lyricLineElements}</div>)
                 } else {
+                    if (nextLine) lines.unshift(nextLine);
+
                     const lyricLineElements = [];
                     for (let i = 0; i < line.chords.length-1; i++) {
                         const chord = line.chords[i];
@@ -50,9 +51,34 @@ function Chords({input}: { input: string }) {
             case "rule":
                 elements.push(<hr/>);
                 break;
-            case "tab":
-                elements.push(<pre className={"tab"}>{line.text}</pre>);
+            case "tab": {
+                const tabLines = [line];
+                let nextLine;
+                let length = line.length;
+                while ((nextLine = lines.shift()) && nextLine && nextLine.type === 'tab') {
+                    tabLines.push(nextLine);
+                    length = Math.max(length, nextLine.length);
+                }
+                if (nextLine) lines.unshift(nextLine);
+                elements.push(<div className={"tab"} style={{
+                    display: "grid",
+                    gridTemplateRows: `repeat(${tabLines.length}, 1fr)`,
+                    gridTemplateColumns: `auto repeat(${length}, 1fr) auto`,
+                    breakInside: "avoid"
+                }}>
+                    {tabLines.map(( tab, i ) => {
+                        const tabLineElements = [];
+                        const gridRow = i+1;
+                        tabLineElements.push(<div className={"tab-string"} style={{gridColumn: 1, gridRow}}>{tab.string}</div>);
+                        tabLineElements.push(<div className={"tab-after"} style={{gridColumn: -1, gridRow}}>{tab.after}</div>);
+                        for (const note of tab.notes) {
+                            tabLineElements.push(<div className={"tab-note"} style={{gridColumn: note.index+2, gridRow}}>{note.note}</div>)
+                        }
+                        return tabLineElements;
+                    })}
+                </div>);
                 break;
+            }
             case "chord-diagram":
                 elements.push(<ChordDiagram frets={line.frets} title={line.chord}/>);
                 break;
