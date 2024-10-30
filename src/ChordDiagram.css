@@ -1,0 +1,18 @@
+.chord-diagram {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+
+    width: 6em;
+
+    svg * {
+        fill: white !important;
+        stroke: white !important;
+
+        @media print {
+            fill: black !important;
+            stroke: black !important;
+        }
+    }
+}
