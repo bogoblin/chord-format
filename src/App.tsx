@@ -55,9 +55,21 @@ function Chords({input}: { input: string }) {
                 const tabLines = [line];
                 let nextLine;
                 let length = line.length;
-                while ((nextLine = lines.shift()) && nextLine && nextLine.type === 'tab') {
-                    tabLines.push(nextLine);
-                    length = Math.max(length, nextLine.length);
+                let blanksSkipped = 0;
+                while (true) {
+                    nextLine = lines.shift();
+                    if (!nextLine) break;
+                    if (nextLine.type === "tab") {
+                        tabLines.push(nextLine);
+                        length = Math.max(length, nextLine.length);
+                        blanksSkipped = 0;
+                    }
+                    else if (blanksSkipped === 0 && nextLine.type === "blank") {
+                        blanksSkipped += 1;
+                    }
+                    else {
+                        break;
+                    }
                 }
                 if (nextLine) lines.unshift(nextLine);
                 elements.push(<div className={"tab"} style={{

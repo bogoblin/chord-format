@@ -86,8 +86,8 @@ hr {
 }
 
 .tab {
-    margin: 0;
     text-align: center;
+    margin: 0.5em 0;
 }
 .tab-string {
     border-right: 1px solid;
@@ -103,6 +103,8 @@ hr {
         background-color: var(--background-color);
         padding: 0 0.1em;
     }
+    min-width: 0;
+    overflow: visible;
 }
 .tab-line {
     display: block;

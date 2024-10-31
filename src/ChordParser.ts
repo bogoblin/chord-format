@@ -224,7 +224,7 @@ export function identifyLines(chords: string) {
             result.push({type: "rule", text: line});
             continue;
         }
-        const tabMatch = line.match(/^\s*([a-g][#b]?)?\|([-\d|]*)\|([^|]*)$/i);
+        const tabMatch = line.match(/^\s*([a-g][#b]?)?\|(.*)\|([^|]*)$/i);
         if (tabMatch) {
             const notes = [];
             for (const tabNote of tabMatch[2].matchAll(/[^-]+/g)) {
