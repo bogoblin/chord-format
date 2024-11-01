@@ -2,6 +2,7 @@ import { useState } from 'react'
 import {applySensibleMerges, identifyLines, pairChordsWithLine, splitWordsFromPairedChords} from "./ChordParser.ts";
 import './App.css';
 import {ChordDiagram} from "./ChordDiagram.tsx";
+import {ImportFromUltimateGuitar} from "./Scraping.ts";
 
 function Chords({input}: { input: string }) {
     const lines = identifyLines(input);
@@ -120,6 +121,13 @@ function App() {
     return (
         <>
             <form className={"no-print"}>
+                <div style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
+                    <h1 style={{textWrap: "nowrap"}}>Format Chords for Printing</h1>
+                    <div style={{textAlign: "right"}}>
+                        Drag this link to your bookmarks bar to open a chord sheet here: <a
+                        href={`javascript:(${ImportFromUltimateGuitar.toString()})()`}>Import from Ultimate Guitar</a>
+                    </div>
+                </div>
                 <label style={{padding: "0"}}>
                     Paste chords here:<br/>
                     <textarea style={{minWidth: "100%", maxWidth: "100%"}} value={chordInput}
@@ -163,7 +171,7 @@ function App() {
             </form>
             <div className={"chord-sheet"} style={{fontSize: `${fontScale}%`, columnCount: columns}}>
                 <h1>{title}</h1>
-                {artist.length > 0 ? <h2 className={"byline"}>by {artist}</h2> : '' }
+                {artist.length > 0 ? <h2 className={"byline"}>by {artist}</h2> : ''}
                 <Chords input={chordInput}/>
             </div>
         </>
