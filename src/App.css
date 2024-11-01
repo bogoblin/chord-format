@@ -112,3 +112,6 @@ hr {
     border-bottom: 1px solid;
     width: 100%;
 }
+.tab-bar {
+    border-right: 1px solid;
+}

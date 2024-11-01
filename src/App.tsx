@@ -86,9 +86,20 @@ function Chords({input}: { input: string }) {
                         tabLineElements.push(<div className={"tab-after"} style={{gridColumn: -1, gridRow}}>{tab.after}</div>);
                         tabLineElements.push(<div className={"tab-line"} style={{gridColumn: "2 / -1", gridRow}}/>);
                         for (const note of tab.notes) {
-                            tabLineElements.push(<div className={"tab-note"} style={{gridColumn: note.index+2, gridRow, gridColumnEnd: note.index+ 1 + note.note.length}}>
-                                <span>{note.note}</span>
-                            </div>)
+                            if (note.note === "|") {
+                                tabLineElements.push(<div className={"tab-bar"} style={{
+                                    gridColumn: note.index + 2,
+                                    gridRow,
+                                }}/>);
+                            } else {
+                                tabLineElements.push(<div className={"tab-note"} style={{
+                                    gridColumn: note.index + 2,
+                                    gridRow,
+                                    gridColumnEnd: note.index + 1 + note.note.length
+                                }}>
+                                    <span>{note.note}</span>
+                                </div>);
+                            }
                         }
                         return tabLineElements;
                     })}
