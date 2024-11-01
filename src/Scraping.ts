@@ -15,7 +15,7 @@ export function ImportFromUltimateGuitar() {
             }
         }
 
-        const params = new URLSearchParams({text: sourceElement.innerText});
+        const params = new URLSearchParams({text: sourceElement.innerText.replace(/X$/, '')});
         if (songTitle) params.set('title', songTitle);
         if (artist) params.set('artist', artist);
 
