@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import {MouseEventHandler, ReactNode, useReducer, useState} from 'react'
 import {applySensibleMerges, identifyLines, pairChordsWithLine, splitWordsFromPairedChords} from "./ChordParser.ts";
 import './App.css';
 import {ChordDiagram} from "./ChordDiagram.tsx";
@@ -115,12 +115,27 @@ function Chords({input}: { input: string }) {
     return <>{elements}</>
 }
 
+function numberReducer(min?: number, max?: number) {
+    return (prev: number, action: {type: "increment"|"set", amount: number}) => {
+        let newValue = prev;
+        if (action.type === "increment") {
+            newValue = prev + action.amount;
+        }
+        else if (action.type === "set") {
+            newValue = action.amount;
+        }
+        if (min !== undefined && newValue < min) newValue = min;
+        if (max !== undefined && newValue > max) newValue = max;
+        return newValue;
+    }
+}
+
 function App() {
     const urlParams = new URLSearchParams(location.search);
 
     const [chordInput, setChordInput] = useState(urlParams.get('text') || '');
-    const [fontScale, setFontScale] = useState(100);
-    const [columns, setColumns] = useState(2);
+    const [fontScale, setFontScale] = useReducer(numberReducer(30, 300), 100);
+    const [columns, setColumns] = useReducer(numberReducer(1, 10), 2);
 
     const [title, setTitle] = useState(urlParams.get('title') || '');
     const [artist, setArtist] = useState(urlParams.get('artist') || '');
@@ -142,43 +157,36 @@ function App() {
                 </div>
                 <label style={{padding: "0"}}>
                     Paste chords here:<br/>
-                    <textarea style={{minWidth: "100%", maxWidth: "100%"}} value={chordInput}
+                    <textarea style={{minWidth: "100%", maxWidth: "100%", minHeight: "8em"}} value={chordInput}
                               onChange={(event) => setChordInput(event.target.value)}/>
                 </label>
-                <div>
-                    <label>
+                <div style={{display: "flex", flexWrap: "wrap", gap: "1em"}}>
+                    <label style={{padding: 0}}>
                         Title: <input type={"text"} value={title} onChange={event => setTitle(event.target.value)}/>
                     </label>
-                    <label>
+                    <label style={{padding: 0}}>
                         Artist: <input type={"text"} value={artist} onChange={event => setArtist(event.target.value)}/>
                     </label>
+                    <span>
+                        Font size: <Button onClick={() => setFontScale({type: "increment", amount: -10})}>--</Button>
+                        <Button onClick={() => setFontScale({type: "increment", amount: -1})}>-</Button>
+                        <span style={{margin: "0 0.5em"}}>{fontScale}%</span>
+                        <Button onClick={() => setFontScale({type: "increment", amount: 1})}>+</Button>
+                        <Button onClick={() => setFontScale({type: "increment", amount: 10})}>++</Button>
+                    </span>
+                    <span>
+                        Columns: <Button onClick={() => setColumns({type: "increment", amount: -1})}>-</Button>
+                        <span style={{margin: "0 0.5em"}}>{columns}</span>
+                        <Button onClick={() => setColumns({type: "increment", amount: 1})}>+</Button>
+                    </span>
+                    <span>
+                        <Button onClick={() => navigator.clipboard.writeText(url).then(() => console.log("copied to clipboard"))}>
+                            Copy link to Clipboard
+                        </Button>
+                        <Button onClick={() => print()}>Print
+                        </Button>
+                    </span>
                 </div>
-                <div>
-                    <label>
-                        Font size:
-                        <input type={"range"} value={fontScale} min={30} max={300}
-                               onChange={event => setFontScale(parseFloat(event.target.value))}/>
-                        {fontScale}%
-                    </label>
-                    <label>
-                        Columns:
-                        <input type={"number"} value={columns} min={1} max={10}
-                               onChange={event => setColumns(parseFloat(event.target.value))}/>
-                    </label>
-                </div>
-                {/*<Share url={url}/>*/}
-                <button onClick={e => {
-                    navigator.clipboard.writeText(url).then(() => console.log("copied to clipboard"));
-                    e.stopPropagation();
-                    e.preventDefault();
-                }}>Copy link to Clipboard
-                </button>
-                <button onClick={e => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    print();
-                }}>Print
-                </button>
                 <hr/>
             </form>
             <div className={"chord-sheet"} style={{fontSize: `${fontScale}%`, columnCount: columns}}>
@@ -188,6 +196,16 @@ function App() {
             </div>
         </>
     )
+}
+
+function Button(props: { children: ReactNode, onClick: MouseEventHandler<HTMLButtonElement> | undefined}) {
+    return <button onClick={e => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (props.onClick) {
+            return props.onClick(e);
+        }
+    }}>{props.children}</button>
 }
 
 export default App

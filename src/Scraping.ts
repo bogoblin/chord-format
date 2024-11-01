@@ -1,4 +1,6 @@
 export function ImportFromUltimateGuitar() {
+    if (!location.host.match(/ultimate-guitar\.com/i)) return;
+
     const sourceElement = document.querySelector("pre");
     const title = document.querySelector("meta[property='og:title']");
     if (sourceElement) {
