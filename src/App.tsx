@@ -90,7 +90,8 @@ function Chords({input}: { input: string }) {
                                 tabLineElements.push(<div className={"tab-bar"} style={{
                                     gridColumn: note.index + 2,
                                     gridRow,
-                                }}/>);
+                                    gridColumnEnd: note.index + 1 + note.note.length
+                                }}><span></span></div>);
                             } else {
                                 tabLineElements.push(<div className={"tab-note"} style={{
                                     gridColumn: note.index + 2,

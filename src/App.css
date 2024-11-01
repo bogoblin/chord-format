@@ -113,5 +113,10 @@ hr {
     width: 100%;
 }
 .tab-bar {
-    border-right: 1px solid;
+    * {
+        display: block;
+        border-right: 1px solid;
+        height: 100%;
+        width: 50%;
+    }
 }
