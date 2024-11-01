@@ -11,6 +11,9 @@ body {
     }
 }
 
+a {
+    color: #72c5fd;
+}
 p {
     margin: 0;
     font-style: italic;
