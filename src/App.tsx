@@ -148,13 +148,16 @@ function App() {
     return (
         <>
             <form className={"no-print"}>
-                <div style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
-                    <h1 style={{textWrap: "nowrap"}}>Format Chords for Printing</h1>
+                <div style={{display: "flex", justifyContent: "space-between", gap: "3ch", overflow: "hidden"}}>
+                    <h1 style={{textWrap: "nowrap", marginRight: "3ch"}}>Format Chords for Printing</h1>
+                    <a href={"https://github.com/bogoblin/chord-format"}>Github</a>
                     <div style={{textAlign: "right"}}>
                         Drag this link to your bookmarks bar to open a chord sheet here: <a
-                        href={`javascript:(${ImportFromUltimateGuitar.toString()})()`}>Import from Ultimate Guitar</a>
+                        href={`javascript:(${ImportFromUltimateGuitar.toString()})()`}>Import from Ultimate
+                        Guitar</a>
                     </div>
                 </div>
+                <hr/>
                 <label style={{padding: "0"}}>
                     Paste chords here:<br/>
                     <textarea style={{minWidth: "100%", maxWidth: "100%", minHeight: "8em"}} value={chordInput}
@@ -180,7 +183,8 @@ function App() {
                         <Button onClick={() => setColumns({type: "increment", amount: 1})}>+</Button>
                     </span>
                     <span>
-                        <Button onClick={() => navigator.clipboard.writeText(url).then(() => console.log("copied to clipboard"))}>
+                        <Button
+                            onClick={() => navigator.clipboard.writeText(url).then(() => console.log("copied to clipboard"))}>
                             Copy link to Clipboard
                         </Button>
                         <Button onClick={() => print()}>Print
@@ -190,7 +194,7 @@ function App() {
                 <hr/>
             </form>
             <div className={"chord-sheet"} style={{fontSize: `${fontScale}%`, columnCount: columns}}>
-                <h1>{title}</h1>
+            <h1>{title}</h1>
                 {artist.length > 0 ? <h2 className={"byline"}>by {artist}</h2> : ''}
                 <Chords input={chordInput}/>
             </div>
